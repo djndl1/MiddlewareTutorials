@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 using RemotingContract;
 
 namespace RemotingJobServer
@@ -14,6 +15,12 @@ namespace RemotingJobServer
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IJobServer, JobServerInternal>();
+
+            services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
+                q.ScheduleJob<RemotingJob>(trigger => trigger.StartNow());
+            });
         }
     }
 }
