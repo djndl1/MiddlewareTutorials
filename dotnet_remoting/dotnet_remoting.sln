@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingJobServer", "RemotingJobServer\RemotingJobServer.csproj", "{F6D4850D-7F74-4A1F-AEFD-7FE8A84732F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingClient", "RemotingClient\RemotingClient.csproj", "{95870153-0F33-46F1-9426-FC35691AB08F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{F6D4850D-7F74-4A1F-AEFD-7FE8A84732F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6D4850D-7F74-4A1F-AEFD-7FE8A84732F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6D4850D-7F74-4A1F-AEFD-7FE8A84732F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95870153-0F33-46F1-9426-FC35691AB08F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95870153-0F33-46F1-9426-FC35691AB08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95870153-0F33-46F1-9426-FC35691AB08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95870153-0F33-46F1-9426-FC35691AB08F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

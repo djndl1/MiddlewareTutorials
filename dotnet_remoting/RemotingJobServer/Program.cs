@@ -10,20 +10,20 @@ namespace RemotingJobServer
     {
         static async Task Main(string[] args)
         {
-            IHostBuilder builder = Host.CreateDefaultBuilder(args);
+            try
+            {
+                IHostBuilder builder = Host.CreateDefaultBuilder(args);
+                _ = builder.ConfigureServices(ServiceConfiguration.ConfigureServices);
+                var host = builder.Build();
 
-            builder.ConfigureServices(ServiceConfiguration.ConfigureServices);
+                CompositionRoot.InitializeContainer(host.Services);
 
-            var host = builder.Build();
-
-            var scheduler = await host.Services.GetRequiredService<ISchedulerFactory>()
-                .GetScheduler();
-
-            await scheduler.StartDelayed(TimeSpan.FromSeconds(5));
-
-            host.Run();
-
-            await scheduler.Shutdown();
+                host.Run();
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
     }
 }

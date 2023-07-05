@@ -8,6 +8,7 @@ using RemotingContract;
 
 namespace RemotingContract
 {
+    [Serializable]
     public class JobEventArgs : EventArgs
     {
         public JobEventArgs(ReasonCode reason, JobInfo jobInfo)
@@ -18,9 +19,9 @@ namespace RemotingContract
 
         public enum ReasonCode { New, Change }
 
-        private ReasonCode Reason { get; }
+        public ReasonCode Reason { get; }
 
-        private JobInfo JobInfo { get; set; }
+        public JobInfo JobInfo { get; set; }
 
     }
 }

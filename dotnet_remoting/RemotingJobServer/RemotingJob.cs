@@ -13,14 +13,20 @@ namespace RemotingJobServer
     {
         private readonly ILogger<RemotingJob> _logger;
 
-        public RemotingJob(ILogger<RemotingJob> logger)
+        private readonly LegacyRemotingConfiguration _config;
+
+        public RemotingJob(ILogger<RemotingJob> logger,
+                           LegacyRemotingConfiguration remotingConfig)
         {
             _logger = logger;
+            _config = remotingConfig;
         }
 
         public Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation("Remoting Server Here!");
+
+            RemotingHost.InitializeRemoting(_config);
 
             return Task.CompletedTask;
         }

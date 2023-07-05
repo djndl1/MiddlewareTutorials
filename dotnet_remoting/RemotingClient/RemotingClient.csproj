@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="netstandard.library" Version="2.0.3" />
+    <PackageReference Include="System.Text.Json" Version="6.0.8" />
+    <Reference Include="System.Runtime.Remoting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RemotingContract\RemotingContract.csproj" />
+  </ItemGroup>
+
+</Project>

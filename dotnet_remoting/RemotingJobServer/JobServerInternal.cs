@@ -4,26 +4,41 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using Microsoft.Extensions.Logging;
+
 using RemotingContract;
 
 namespace RemotingJobServer
 {
-    internal class JobServerInternal : IJobServer
+    public class JobServerInternal : MarshalByRefObject, IJobServer
     {
         private int _nextJobNumber;
 
-        private List<JobInfo> _jobs;
+        private readonly List<JobInfo> _jobs;
+
+        private readonly ILogger<JobServerInternal> _logger;
 
         public JobServerInternal()
         {
             _nextJobNumber = 0;
             _jobs = new List<JobInfo>();
+            _logger = CompositionRoot.GetRequiredService<ILogger<JobServerInternal>>();
+        }
+
+        ///<summary>
+        /// Infinite lifetime
+        ///</summary>
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
 
         public event EventHandler<JobEventArgs> JobEvent;
 
         private void NotifyClients(JobEventArgs args)
         {
+            if (JobEvent is null) return;
+
             foreach (Delegate deleg in JobEvent.GetInvocationList())
             {
                 EventHandler<JobEventArgs> handler = null;
@@ -32,8 +47,11 @@ namespace RemotingJobServer
                     handler = (EventHandler<JobEventArgs>)deleg;
                     _ = handler.BeginInvoke(this, args, null, null);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    _logger.LogError(e, "Failed to trigger {}.{}",
+                                     deleg.Target?.ToString(),
+                                     deleg.Method.Name);
                     // in case of unreachable client, remove the subscription
                     // this issue does not arise with in-process events
                     JobEvent -= handler;

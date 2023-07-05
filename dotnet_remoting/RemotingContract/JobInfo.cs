@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace RemotingContract
 {
+    [Serializable]
     public struct JobInfo
     {
         public JobInfo(int id, string description, string assignedUser, string status)
