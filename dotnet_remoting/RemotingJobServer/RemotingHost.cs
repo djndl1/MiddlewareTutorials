@@ -29,10 +29,10 @@ namespace RemotingJobServer
             else
             {
                 // register a channel
-                var jobHttpChannel = new HttpServerChannel(4000);
+                var jobHttpChannel = new HttpChannel(4000);
                 ChannelServices.RegisterChannel(jobHttpChannel, false);
 
-
+                // allow full deserialization
                 BinaryServerFormatterSinkProvider provider = null;
                 provider = new BinaryServerFormatterSinkProvider
                 {
@@ -43,7 +43,7 @@ namespace RemotingJobServer
                 {
                     ["port"] = 4001
                 };
-                var jobTcpChannel = new TcpServerChannel(props, provider);
+                var jobTcpChannel = new TcpChannel(props, null, provider);
                 ChannelServices.RegisterChannel(jobTcpChannel, false);
 
                 // register the object

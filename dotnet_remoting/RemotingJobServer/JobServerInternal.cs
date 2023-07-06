@@ -39,24 +39,29 @@ namespace RemotingJobServer
         {
             if (JobEvent is null) return;
 
+            int cnt = 0;
             foreach (Delegate deleg in JobEvent.GetInvocationList())
             {
                 EventHandler<JobEventArgs> handler = null;
                 try
                 {
                     handler = (EventHandler<JobEventArgs>)deleg;
-                    _ = handler.BeginInvoke(this, args, null, null);
+                    handler.Invoke(this, args);
+                    _logger.LogInformation("Triggering {}.{}",
+                                           deleg.Target?.ToString(),
+                                           deleg.Method.Name);
+                    cnt++;
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "Failed to trigger {}.{}",
-                                     deleg.Target?.ToString(),
-                                     deleg.Method.Name);
+                    _logger.LogError("Failed to trigger");
                     // in case of unreachable client, remove the subscription
                     // this issue does not arise with in-process events
                     JobEvent -= handler;
                 }
             }
+
+            _logger.LogInformation("{} handlers triggered", cnt);
         }
 
         public void CreateJob(string description)
