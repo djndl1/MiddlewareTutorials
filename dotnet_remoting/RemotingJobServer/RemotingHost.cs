@@ -19,10 +19,10 @@ namespace RemotingJobServer
         {
             if (config.UseAppConfig)
             {
-                using (var process = Process.GetCurrentProcess())
-                {
-                    RemotingConfiguration.Configure(process.MainModule.FileName + ".config", false);
-                }
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string exeName = AppDomain.CurrentDomain.FriendlyName;
+                string executablePath = Path.Combine(baseDir, exeName);
+                RemotingConfiguration.Configure(executablePath + ".config", false);
             }
             else
             {
