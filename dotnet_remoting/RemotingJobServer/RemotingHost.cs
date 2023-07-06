@@ -10,6 +10,8 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Reflection;
 using System.Diagnostics;
+using System.Runtime.Serialization.Formatters;
+using System.Collections;
 
 namespace RemotingJobServer
 {
@@ -30,7 +32,18 @@ namespace RemotingJobServer
                 var jobHttpChannel = new HttpServerChannel(4000);
                 ChannelServices.RegisterChannel(jobHttpChannel, false);
 
-                var jobTcpChannel = new TcpServerChannel(4001);
+
+                BinaryServerFormatterSinkProvider provider = null;
+                provider = new BinaryServerFormatterSinkProvider
+                {
+                    TypeFilterLevel = TypeFilterLevel.Full
+                };
+
+                var props = new Hashtable
+                {
+                    ["port"] = 4001
+                };
+                var jobTcpChannel = new TcpServerChannel(props, provider);
                 ChannelServices.RegisterChannel(jobTcpChannel, false);
 
                 // register the object
