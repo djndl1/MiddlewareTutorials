@@ -47,11 +47,20 @@ namespace RemotingJobServer
                 ChannelServices.RegisterChannel(jobTcpChannel, false);
 
                 // register the object
+                RemotingConfiguration.ApplicationName = "RemotingJobServer";
                 RemotingConfiguration.RegisterWellKnownServiceType(
                     typeof(JobServerInternal),
                     "JobURI",
                     WellKnownObjectMode.Singleton
                 );
+                RemotingConfiguration.RegisterWellKnownServiceType(
+                    typeof(JobNotesFactory),
+                    "JobNotes/Factory",
+                    WellKnownObjectMode.Singleton
+                );
+                RemotingConfiguration.RegisterActivatedServiceType(
+                    typeof(JobNotesInternal));
+
 
                 Console.WriteLine("Remoting Server started");
             }

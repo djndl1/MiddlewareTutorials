@@ -7,6 +7,9 @@ using System.Threading;
 using RemotingContract;
 using System.Runtime.Serialization.Formatters;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting;
 
 namespace RemotingClient
 {
@@ -59,7 +62,7 @@ namespace RemotingClient
             // the event triggered here
             jobServer.CreateJob(Environment.MachineName);
 
-            foreach (var job in jobServer.GetJobs())
+            foreach (JobInfo job in jobServer.GetJobs())
             {
                 Console.WriteLine(job.Description);
             }
@@ -68,6 +71,24 @@ namespace RemotingClient
 
             // wait for the event
             Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            JobInfo firstJob = jobServer.GetJobs().First();
+
+
+            foreach (var entry in RemotingConfiguration.GetRegisteredActivatedClientTypes())
+            {
+                Console.WriteLine($"{entry.TypeName}: {entry.ApplicationUrl}");
+            }
+
+            IJobNotesFactory factory = (IJobNotesFactory)Activator.GetObject(typeof(IJobNotesFactory), "tcp://127.0.0.1:4001/JobNotes/Factory");
+            IJobNotes notes = factory.Create();
+            notes.AddNote(firstJob.Id, "I have some question on this job.");
+            notes.AddNote(firstJob.Id, "I have more question on this job.");
+
+            List<string> allJobNotes = notes.GetNotes(firstJob.Id);
+
+            Console.WriteLine(
+               string.Join(Environment.NewLine + Environment.NewLine, allJobNotes));
         }
     }
 
