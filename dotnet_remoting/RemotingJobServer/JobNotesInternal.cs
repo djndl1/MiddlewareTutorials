@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using RemotingContract;
+using System.Runtime.Remoting.Lifetime;
 
 namespace RemotingJobServer
 {
@@ -30,6 +31,18 @@ namespace RemotingJobServer
         {
             return !_notes.TryGetValue(id, out List<string> notes)
                 ? new List<string>() : notes;
+        }
+
+        public override object InitializeLifetimeService()
+        {
+            ILease lease = (ILease)base.InitializeLifetimeService();
+            if (lease != null)
+            {
+                lease.InitialLeaseTime = TimeSpan.FromMinutes(1);
+                lease.SponsorshipTimeout = lease.InitialLeaseTime;
+                lease.RenewOnCallTime = TimeSpan.FromMinutes(0.5);
+            }
+            return lease;
         }
     }
 }

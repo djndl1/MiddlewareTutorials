@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\RemotingContract\RemotingContract.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>RemotingJobServer</AssemblyName>
+  </PropertyGroup>
+
+</Project>

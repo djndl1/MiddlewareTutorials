@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RemotingContract\RemotingContract.csproj" />
-    <ProjectReference Include="..\RemotingClient\RemotingClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
