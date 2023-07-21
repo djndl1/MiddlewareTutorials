@@ -1,0 +1,161 @@
+import "unknwn.idl";
+import "oaidl.idl";
+
+[
+  uuid(65074F7F-63C0-304E-AF0A-D51741CB4A8D),
+]
+dispinterface _Object
+{
+    properties:
+
+    methods:
+  [id(0), propget]
+  HRESULT ToString(
+    [out, retval] BSTR *pRetVal
+  );
+
+  [id(0x60020001)]
+  HRESULT Equals(
+    [in] VARIANT obj,
+    [out, retval] BOOL *pRetVal
+  );
+
+  HRESULT GetHashCode(
+    [out, retval] long *pRetVal
+  );
+};
+
+/*
+[
+  uuid(7BCFA00F-F764-3113-9140-3BBD127A96BB),
+  version(1.0),
+  dual,
+  oleautomation,
+  dispatchable
+]
+dispinterface IList : stdole2.tlb_00020400-0000-0000-C000-000000000046_01_3
+{
+  [id(0), propget]
+  HRESULT __stdcall Item (
+    [in] long index,
+    [out retval] VARIANT *pRetVal
+  );
+  [id(0), propputref]
+  HRESULT __stdcall Item (
+    [in] long index,
+    [in] VARIANT argNo2
+  );
+  [id(0x60020002)]
+  HRESULT __stdcall Add (
+    [in] VARIANT value,
+    [out retval] long *pRetVal
+  );
+  HRESULT __stdcall Contains (
+    [in] VARIANT value,
+    [out retval] WINBOOL *pRetVal
+  );
+  HRESULT __stdcall Clear (void);
+  [propget]
+  HRESULT __stdcall IsReadOnly (
+    [out retval] WINBOOL *pRetVal
+  );
+  [propget]
+  HRESULT __stdcall IsFixedSize (
+    [out retval] WINBOOL *pRetVal
+  );
+  HRESULT __stdcall IndexOf (
+    [in] VARIANT value,
+    [out retval] long *pRetVal
+  );
+  HRESULT __stdcall Insert (
+    [in] long index,
+    [in] VARIANT value
+  );
+  HRESULT __stdcall Remove (
+    [in] VARIANT value
+  );
+  HRESULT __stdcall RemoveAt (
+    [in] long index
+  );
+};
+
+[
+  uuid(DE8DB6F8-D101-3A92-8D1C-E72E5F10E992),
+  version(1.0),
+  dual,
+  oleautomation,
+  dispatchable
+]
+dispinterface ICollection : stdole2.tlb_00020400-0000-0000-C000-000000000046_01_3
+{
+  [id(0x60020000)]
+  HRESULT __stdcall CopyTo (
+    [in] dispinterface _Array *Array,
+    [in] long index
+  );
+  [propget]
+  HRESULT __stdcall Count (
+    [out retval] long *pRetVal
+  );
+  [propget]
+  HRESULT __stdcall SyncRoot (
+    [out retval] VARIANT *pRetVal
+  );
+  [propget]
+  HRESULT __stdcall IsSynchronized (
+    [out retval] WINBOOL *pRetVal
+  );
+};
+
+[
+  uuid(401F89CB-C127-3041-82FD-B67035395C56),
+  hidden,
+  dual,
+  oleautomation,
+  dispatchable
+]
+dispinterface _ArrayList : stdole2.tlb_00020400-0000-0000-C000-000000000046_01_3
+{
+};
+
+[
+  uuid(496B0ABE-CDEE-11D3-88E8-00902754C43A),
+  version(1.0),
+  dual,
+  oleautomation,
+  dispatchable
+]
+dispinterface IEnumerable : stdole2.tlb_00020400-0000-0000-C000-000000000046_01_3
+{
+  [id(0xfffffffc)]
+  HRESULT __stdcall GetEnumerator (
+    [out retval] stdole2.tlb_00020404-0000-0000-C000-000000000046_01_3 **pRetVal
+  );
+};
+
+[
+  uuid(0CB251A7-3AB3-3B5C-A0B8-9DDF88824B85),
+  version(1.0),
+  dual,
+  oleautomation,
+  dispatchable
+]
+dispinterface ICloneable : stdole2.tlb_00020400-0000-0000-C000-000000000046_01_3
+{
+  [id(0x60020000)]
+  HRESULT __stdcall Clone (
+    [out retval] VARIANT *pRetVal
+  );
+};
+
+coclass ArrayList
+{
+  dispinterface _ArrayList;
+  dispinterface _Object;
+  dispinterface IList;
+  dispinterface ICollection;
+  dispinterface IEnumerable;
+  dispinterface ICloneable;
+};
+
+*/
