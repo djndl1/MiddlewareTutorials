@@ -98,3 +98,4 @@ dkms.conf
 
 build/
 .clangd/
+.vscode
