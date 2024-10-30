@@ -15,21 +15,36 @@ from dataclasses import dataclass
 
 import json
 
+JSONRPC_MESSAGE_MAGIC_NUMBER = 0xAEEF
+
 @dataclass
 class JsonRpcSocketMessage:
-    sequence: int # uint16
-    data_length: int = 1   # uint32
+    '''binary message
+
+    magic number: 0xAEEF
+    sequence: uint16
+    data_length: uint32
+    jsonrpc_data: undefined length
+    '''
+    magic_number: int = JSONRPC_MESSAGE_MAGIC_NUMBER # 2 bytes
+    sequence: int = 0 # uint16
+    data_length: int = 0   # uint32
 
     _jsonrpc_data: bytes = bytes()
 
-    magic_number: int = 0xAEEF # 2 bytes
+    header_length = 8
 
-    @staticmethod
-    def from_bytes(buf):
-        seq, length = struct.unpack('!HI', buf)
-        data = buf[8:8+length] if len(buf) >= 8 + length else None
+    @classmethod
+    def from_bytes(cls, buf):
+        magic, seq, length = struct.unpack('!HHI', buf)
 
-        return JsonRpcSocketMessage(seq, length, data)
+        if magic != JSONRPC_MESSAGE_MAGIC_NUMBER:
+            return None
+
+        data = buf[cls.header_length:cls.header_length + length] \
+            if len(buf) > cls.header_length else None
+
+        return JsonRpcSocketMessage(magic, seq, length, data)
 
     @property
     def jsonrpc_data(self):
@@ -45,10 +60,12 @@ class JsonRpcSocketMessage:
             self._jsonrpc_data = json.dumps(value).encode('utf-8')
         self.data_length = len(self._jsonrpc_data)
 
-
     def __bytes__(self):
         buf = bytearray()
-        buf.extend(struct.pack('!HI', self.sequence, self.data_length))
+        buf.extend(struct.pack('!HHI',
+                               self.magic_number,
+                               self.sequence,
+                               self.data_length))
         buf.extend(self._jsonrpc_data)
 
         return bytes(buf)
@@ -84,8 +101,8 @@ class JsonRpcRequestHandler(BaseRequestHandler):
     def handle(self):
         while True:
             try:
-                buf = self.request.recv(6)
-            except ConnectionResetError as e:
+                buf = self.request.recv(JsonRpcSocketMessage.header_length)
+            except ConnectionResetError:
                 break
             if not buf:
                 break
@@ -102,21 +119,20 @@ class JsonRpcRequestHandler(BaseRequestHandler):
 
                     data_buf.extend(buf)
                     received_len += len(buf)
-                except ConnectionResetError as e:
+                except ConnectionResetError:
                     return
 
             data = data_buf[:message.data_length]
             # supposedly UTF-8
             json_string = data.decode(encoding='utf-8')
 
-            print(json_string)
             response_str = self.server.handle_jsonrpc_request(json_string)
 
-            response = JsonRpcSocketMessage(message.sequence)
-            print(response_str)
+            response = JsonRpcSocketMessage(sequence=message.sequence)
             response.jsonrpc_data = response_str
 
-            self.request.sendall(bytes(response))
+            bs = bytes(response)
+            self.request.sendall(bs)
 
 if __name__ == '__main__':
     with  JsonRpcSocketServer(JsonRpcService(), ("127.0.0.1", 9999), JsonRpcRequestHandler) as server:
