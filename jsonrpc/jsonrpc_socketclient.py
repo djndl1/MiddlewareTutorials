@@ -3,6 +3,7 @@
 from jsonrpc_socketmessage import JsonRpcSocketMessage
 
 from socket_utils import receive_until
+import socket
 
 import socket
 import json
@@ -18,7 +19,10 @@ class JsonRpcSocketClient:
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self._socket.close()
+        try:
+            self._socket.shutdown(socket.SHUT_RDWR)
+        finally:
+            self._socket.close()
 
     @property
     def new_id(self):
