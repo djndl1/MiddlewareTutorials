@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-from jsonrpc_socketserver import JsonRpcSocketMessage
+from jsonrpc_socketmessage import JsonRpcSocketMessage
+
+from socket_utils import receive_until
 
 import socket
 import json
@@ -11,6 +13,12 @@ class JsonRpcSocketClient:
         self._socket = socket.socket()
         self._id_counter = 0
         self._sequence_counter = 0
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._socket.close()
 
     @property
     def new_id(self):
@@ -42,19 +50,12 @@ class JsonRpcSocketClient:
         return self.receive_response()
 
     def receive_response(self):
-        buf = self._socket.recv(JsonRpcSocketMessage.header_length)
-        message = JsonRpcSocketMessage.from_bytes(buf)
+        header_buf = receive_until(self._socket,
+                                   JsonRpcSocketMessage.header_length,
+                                   JsonRpcSocketMessage.header_length)
+        message = JsonRpcSocketMessage.from_bytes(header_buf)
 
-        received_len = 0
-        data_buf = bytearray()
-        while received_len < message.data_length:
-            remaining_len = message.data_length - received_len
-            bufsize = remaining_len if remaining_len < 1024 else 1024
-            buf = self._socket.recv(bufsize)
-
-            data_buf.extend(buf)
-            received_len += len(buf)
-
+        data_buf = receive_until(self._socket, message.data_length, 1024)
         data = data_buf[:message.data_length]
         # supposedly UTF-8
         json_string = data.decode(encoding='utf-8')
@@ -62,11 +63,11 @@ class JsonRpcSocketClient:
         return json.loads(json_string)
 
 if __name__ == '__main__':
-    client = JsonRpcSocketClient()
-    client.connect("127.0.0.1", 9999)
+    with JsonRpcSocketClient() as client:
+        client.connect("127.0.0.1", 9999)
 
-    print(client.request("add", [1, 2]))
-    print(client.request("upper", ["A"]))
-    print(client.request("upper", ["abc"]))
-    print(client.request("upper", ["AGdwerdaspiueqwr"]))
-    print(client.request("echo", []))
+        print(client.request("add", [1, 2]))
+        print(client.request("upper", ["A"]))
+        print(client.request("upper", ["abc"]))
+        print(client.request("upper", ["AGdwerdaspiueqwr"]))
+        print(client.request("echo", []))
