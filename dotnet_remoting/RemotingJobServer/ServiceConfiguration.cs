@@ -20,7 +20,6 @@ namespace RemotingJobServer
 
             services.AddQuartz(q =>
             {
-                q.UseMicrosoftDependencyInjectionJobFactory();
                 q.ScheduleJob<RemotingJob>(trigger => trigger.StartNow());
             });
 
