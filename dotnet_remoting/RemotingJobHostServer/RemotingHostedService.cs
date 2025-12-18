@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Remoting.Channels.Http;
 using Microsoft.Extensions.Logging;
@@ -78,8 +80,17 @@ public class RemotingHostedService : IHostedService
         return Task.CompletedTask;
     }
 
+    private void CloseRemoting()
+    {
+        foreach (IChannel channel in ChannelServices.RegisteredChannels.ToList())
+        {
+            ChannelServices.UnregisterChannel(channel);
+        }
+    }
+
     public Task StopAsync(CancellationToken cancellationToken)
     {
+        CloseRemoting();
         return Task.CompletedTask;
     }
 }

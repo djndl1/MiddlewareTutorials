@@ -8,10 +8,7 @@ namespace RemotingContract;
 
 [Serializable]
 public struct JobInfo(int id, string description, string assignedUser, string status)
-{
-    public int Id { get; set; } = id;
-
-    public string Description { get; set; } = description;
+{ public int Id { get; set; } = id; public string Description { get; set; } = description;
 
     public string AssignedUser { get; set; } = assignedUser;
 
